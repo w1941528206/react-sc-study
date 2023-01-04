@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-debugger;
+// debugger;
 
 const element = <div>hello react</div>;
 

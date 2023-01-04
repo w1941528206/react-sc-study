@@ -28,7 +28,7 @@ import { disableLogs, reenableLogs } from 'shared/ConsolePatchingDev';
 // import ReactSharedInternals from 'shared/ReactSharedInternals';
 import ReactSharedInternals from '../react/src/ReactSharedInternals';
 
-console.log(ReactSharedInternals, 'this is ReactSharedInternals');
+// console.log(ReactSharedInternals, 'this is ReactSharedInternals');
 
 const { ReactCurrentDispatcher } = ReactSharedInternals;
 
