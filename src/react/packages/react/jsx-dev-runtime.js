@@ -7,4 +7,4 @@
  *      
  */
 
-export {Fragment, jsxDEV} from './src/jsx/ReactJSX';
+export { Fragment, jsxDEV } from './src/jsx/ReactJSX'; // sc-study:1 23.1.4 jsxDEV

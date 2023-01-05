@@ -21,12 +21,12 @@ import {
   REACT_FRAGMENT_TYPE,
   REACT_ELEMENT_TYPE,
 } from 'shared/ReactSymbols';
-import {warnAboutSpreadingKeyToJSX} from 'shared/ReactFeatureFlags';
+import { warnAboutSpreadingKeyToJSX } from 'shared/ReactFeatureFlags';
 import hasOwnProperty from 'shared/hasOwnProperty';
 import isArray from 'shared/isArray';
-import {jsxDEV} from './ReactJSXElement';
+import { jsxDEV } from './ReactJSXElement';
 
-import {describeUnknownElementTypeFrameInDEV} from 'shared/ReactComponentStackFrame';
+import { describeUnknownElementTypeFrameInDEV } from 'shared/ReactComponentStackFrame';
 
 import ReactSharedInternals from 'shared/ReactSharedInternals';
 
@@ -161,7 +161,7 @@ function validateExplicitKey(element, parentType) {
     setCurrentlyValidatingElement(element);
     console.error(
       'Each child in a list should have a unique "key" prop.' +
-        '%s%s See https://reactjs.org/link/warning-keys for more information.',
+      '%s%s See https://reactjs.org/link/warning-keys for more information.',
       currentComponentErrorInfo,
       childOwner,
     );
@@ -259,7 +259,7 @@ function validatePropTypes(element) {
     ) {
       console.error(
         'getDefaultProps is only used on classic React.createClass ' +
-          'definitions. Use a static property named `defaultProps` instead.',
+        'definitions. Use a static property named `defaultProps` instead.',
       );
     }
   }
@@ -278,7 +278,7 @@ function validateFragmentProps(fragment) {
         setCurrentlyValidatingElement(fragment);
         console.error(
           'Invalid prop `%s` supplied to `React.Fragment`. ' +
-            'React.Fragment can only have `key` and `children` props.',
+          'React.Fragment can only have `key` and `children` props.',
           key,
         );
         setCurrentlyValidatingElement(null);
@@ -304,11 +304,30 @@ export function jsxWithValidation(
   source,
   self,
 ) {
+  // console.log(type, 'type');
+  // console.log(props, 'props');
+  // console.log(key, 'key');
+  // console.log(isStaticChildren, 'isStaticChildren'); // TODO:
+  // console.log(source, 'source'); // 对应项目代码位置
+  // console.log(self, 'self'); // TODO:
+
+  /**
+   * 好像有点理解...
+   * 只需要在乎jsxDEV 能组成react虚拟元素就行 babel会把这个方法放在需要的地方
+   * babel编译为
+   * _jsx(dom标签类型, { 
+   *    属性里面有 children: [又是一个jsx方法_jsx(标签类型, {属性 children 等})],
+   *    可能还有其他属性 style等 
+   * })
+   * 所以先执行完 最里层 最末尾节点的 jsxDEV 再逐个往外执行 组成react虚拟元素
+   */
+
   if (__DEV__) {
     const validType = isValidElementType(type);
 
     // We warn in this case but don't throw. We expect the element creation to
     // succeed and there will likely be errors in render.
+    // TODO: 这里是什么
     if (!validType) {
       let info = '';
       if (
@@ -344,13 +363,13 @@ export function jsxWithValidation(
 
       console.error(
         'React.jsx: type is invalid -- expected a string (for ' +
-          'built-in components) or a class/function (for composite ' +
-          'components) but got: %s.%s',
+        'built-in components) or a class/function (for composite ' +
+        'components) but got: %s.%s',
         typeString,
         info,
       );
     }
-
+    // sc-study:2 23.1.4 jsxDEV
     const element = jsxDEV(type, props, key, source, self);
 
     // The result can be nullish if a mock or a custom function is used.
@@ -380,8 +399,8 @@ export function jsxWithValidation(
           } else {
             console.error(
               'React.jsx: Static children should always be an array. ' +
-                'You are likely explicitly calling React.jsxs or React.jsxDEV. ' +
-                'Use the Babel transform instead.',
+              'You are likely explicitly calling React.jsxs or React.jsxDEV. ' +
+              'Use the Babel transform instead.',
             );
           }
         } else {
@@ -403,11 +422,11 @@ export function jsxWithValidation(
             keys.length > 0 ? '{' + keys.join(': ..., ') + ': ...}' : '{}';
           console.error(
             'A props object containing a "key" prop is being spread into JSX:\n' +
-              '  let props = %s;\n' +
-              '  <%s {...props} />\n' +
-              'React keys must be passed directly to JSX without using spread:\n' +
-              '  let props = %s;\n' +
-              '  <%s key={someKey} {...props} />',
+            '  let props = %s;\n' +
+            '  <%s {...props} />\n' +
+            'React keys must be passed directly to JSX without using spread:\n' +
+            '  let props = %s;\n' +
+            '  <%s key={someKey} {...props} />',
             beforeExample,
             componentName,
             afterExample,

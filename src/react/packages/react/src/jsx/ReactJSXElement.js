@@ -8,8 +8,8 @@
 import getComponentNameFromType from 'shared/getComponentNameFromType';
 import ReactSharedInternals from 'shared/ReactSharedInternals';
 import hasOwnProperty from 'shared/hasOwnProperty';
-import {REACT_ELEMENT_TYPE} from 'shared/ReactSymbols';
-import {checkKeyStringCoercion} from 'shared/CheckStringCoercion';
+import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
+import { checkKeyStringCoercion } from 'shared/CheckStringCoercion';
 
 const ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
 
@@ -67,11 +67,11 @@ function warnIfStringRefCannotBeAutoConverted(config, self) {
       if (!didWarnAboutStringRefs[componentName]) {
         console.error(
           'Component "%s" contains the string ref "%s". ' +
-            'Support for string refs will be removed in a future major release. ' +
-            'This case cannot be automatically converted to an arrow function. ' +
-            'We ask you to manually fix this case by using useRef() or createRef() instead. ' +
-            'Learn more about using refs safely here: ' +
-            'https://reactjs.org/link/strict-mode-string-ref',
+          'Support for string refs will be removed in a future major release. ' +
+          'This case cannot be automatically converted to an arrow function. ' +
+          'We ask you to manually fix this case by using useRef() or createRef() instead. ' +
+          'Learn more about using refs safely here: ' +
+          'https://reactjs.org/link/strict-mode-string-ref',
           getComponentNameFromType(ReactCurrentOwner.current.type),
           config.ref,
         );
@@ -83,14 +83,14 @@ function warnIfStringRefCannotBeAutoConverted(config, self) {
 
 function defineKeyPropWarningGetter(props, displayName) {
   if (__DEV__) {
-    const warnAboutAccessingKey = function() {
+    const warnAboutAccessingKey = function () {
       if (!specialPropKeyWarningShown) {
         specialPropKeyWarningShown = true;
         console.error(
           '%s: `key` is not a prop. Trying to access it will result ' +
-            'in `undefined` being returned. If you need to access the same ' +
-            'value within the child component, you should pass it as a different ' +
-            'prop. (https://reactjs.org/link/special-props)',
+          'in `undefined` being returned. If you need to access the same ' +
+          'value within the child component, you should pass it as a different ' +
+          'prop. (https://reactjs.org/link/special-props)',
           displayName,
         );
       }
@@ -105,14 +105,14 @@ function defineKeyPropWarningGetter(props, displayName) {
 
 function defineRefPropWarningGetter(props, displayName) {
   if (__DEV__) {
-    const warnAboutAccessingRef = function() {
+    const warnAboutAccessingRef = function () {
       if (!specialPropRefWarningShown) {
         specialPropRefWarningShown = true;
         console.error(
           '%s: `ref` is not a prop. Trying to access it will result ' +
-            'in `undefined` being returned. If you need to access the same ' +
-            'value within the child component, you should pass it as a different ' +
-            'prop. (https://reactjs.org/link/special-props)',
+          'in `undefined` being returned. If you need to access the same ' +
+          'value within the child component, you should pass it as a different ' +
+          'prop. (https://reactjs.org/link/special-props)',
           displayName,
         );
       }
@@ -145,21 +145,24 @@ function defineRefPropWarningGetter(props, displayName) {
  * indicating filename, line number, and/or other information.
  * @internal
  */
-const ReactElement = function(type, key, ref, self, source, owner, props) {
-  const element = {
-    // This tag allows us to uniquely identify this as a React Element
-    $$typeof: REACT_ELEMENT_TYPE,
 
-    // Built-in properties that belong on the element
+// sc-study:5
+const ReactElement = function (type, key, ref, self, source, owner, props) {
+  const element = {
+    // This tag allows us to uniquely identify this as a React Element 设置为react唯一元素
+    $$typeof: REACT_ELEMENT_TYPE, // Symbol.for('react.element');
+
+    // Built-in properties that belong on the element 属于元素的内置属性
     type,
     key,
     ref,
     props,
 
-    // Record the component responsible for creating this element.
+    // Record the component responsible for creating this element. 记录负责创建此元素的组件
     _owner: owner,
   };
 
+  // TODO: 开发环境这里面干啥
   if (__DEV__) {
     // The validation flag is currently mutative. We put it on
     // an external backing store so that we can freeze the whole object.
@@ -198,6 +201,7 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
     }
   }
 
+  // react 元素 就是虚拟dom
   return element;
 };
 
@@ -279,14 +283,15 @@ export function jsx(type, config, maybeKey) {
  */
 export function jsxDEV(type, config, maybeKey, source, self) {
   if (__DEV__) {
-    let propName;
+    let propName; // 属性名
 
-    // Reserved names are extracted
-    const props = {};
+    // Reserved names are extracted 提取保留名称
+    const props = {}; // 属性对象
 
-    let key = null;
-    let ref = null;
+    let key = null; // 每个虚拟dom可以有一个可选的key属性 用来区分一个父节点下不同的子节点
+    let ref = null; // 引入 后面可以通过ref实现获取真实dom
 
+    // 目前 key可以被显示声明 放到props里 但这会导致一个问题 就是 像下面的声明一样
     // Currently, key can be spread in as a prop. This causes a potential
     // issue if key is also explicitly declared (ie. <div {...props} key="Hi" />
     // or <div key="Hi" {...props} /> ). We want to deprecate key spread,
@@ -312,9 +317,14 @@ export function jsxDEV(type, config, maybeKey, source, self) {
       warnIfStringRefCannotBeAutoConverted(config, self);
     }
 
-    // Remaining properties are added to a new props object
+    // Remaining properties are added to a new props object 剩余属性将添加到新的props对象
     for (propName in config) {
       if (
+        /**
+         * sc-study:3 23.1.4
+         * hasOwnProperty 会忽略掉从原型链上继承到的属性 只判断 config 对象中是否存在当前遍历到的 propName
+         * 并且不能有react的保留属性 RESERVED_PROPS 里面的 如 key, ref, __self, __source,
+         * */
         hasOwnProperty.call(config, propName) &&
         !RESERVED_PROPS.hasOwnProperty(propName)
       ) {
@@ -345,6 +355,7 @@ export function jsxDEV(type, config, maybeKey, source, self) {
       }
     }
 
+    // sc-study:4 jsxDEV 返回值 ReactElement 工厂方法
     return ReactElement(
       type,
       key,
