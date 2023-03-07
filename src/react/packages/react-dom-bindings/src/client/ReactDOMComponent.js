@@ -12,9 +12,9 @@ import {
   possibleRegistrationNames,
 } from '../events/EventRegistry';
 
-import {canUseDOM} from 'shared/ExecutionEnvironment';
+import { canUseDOM } from 'shared/ExecutionEnvironment';
 import hasOwnProperty from 'shared/hasOwnProperty';
-import {checkHtmlStringCoercion} from 'shared/CheckStringCoercion';
+import { checkHtmlStringCoercion } from 'shared/CheckStringCoercion';
 
 import {
   getValueForAttribute,
@@ -47,7 +47,7 @@ import {
   updateWrapper as ReactDOMTextareaUpdateWrapper,
   restoreControlledState as ReactDOMTextareaRestoreControlledState,
 } from './ReactDOMTextarea';
-import {track} from './inputValueTracking';
+import { track } from './inputValueTracking';
 import setInnerHTML from './setInnerHTML';
 import setTextContent from './setTextContent';
 import {
@@ -55,19 +55,19 @@ import {
   setValueForStyles,
   validateShorthandPropertyCollisionInDev,
 } from './CSSPropertyOperations';
-import {HTML_NAMESPACE, getIntrinsicNamespace} from '../shared/DOMNamespaces';
+import { HTML_NAMESPACE, getIntrinsicNamespace } from '../shared/DOMNamespaces';
 import {
   getPropertyInfo,
   shouldIgnoreAttribute,
   shouldRemoveAttribute,
 } from '../shared/DOMProperty';
 import assertValidProps from '../shared/assertValidProps';
-import {DOCUMENT_NODE} from '../shared/HTMLNodeType';
+import { DOCUMENT_NODE } from '../shared/HTMLNodeType';
 import isCustomComponent from '../shared/isCustomComponent';
 import possibleStandardNames from '../shared/possibleStandardNames';
-import {validateProperties as validateARIAProperties} from '../shared/ReactDOMInvalidARIAHook';
-import {validateProperties as validateInputProperties} from '../shared/ReactDOMNullInputValuePropHook';
-import {validateProperties as validateUnknownProperties} from '../shared/ReactDOMUnknownPropertyHook';
+import { validateProperties as validateARIAProperties } from '../shared/ReactDOMInvalidARIAHook';
+import { validateProperties as validateInputProperties } from '../shared/ReactDOMNullInputValuePropHook';
+import { validateProperties as validateUnknownProperties } from '../shared/ReactDOMUnknownPropertyHook';
 
 import {
   enableTrustedTypesIntegration,
@@ -91,9 +91,9 @@ const CHILDREN = 'children';
 const STYLE = 'style';
 const HTML = '__html';
 
-let warnedUnknownTags   
-                         
- ;
+let warnedUnknownTags
+
+  ;
 
 let validatePropertiesInDevelopment;
 let warnForPropDifference;
@@ -115,7 +115,7 @@ if (__DEV__) {
     webview: true,
   };
 
-  validatePropertiesInDevelopment = function(type, props) {
+  validatePropertiesInDevelopment = function (type, props) {
     validateARIAProperties(type, props);
     validateInputProperties(type, props);
     validateUnknownProperties(type, props, {
@@ -134,10 +134,10 @@ if (__DEV__) {
   // See https://github.com/facebook/react/issues/11807
   canDiffStyleForHydrationWarning = canUseDOM && !document.documentMode;
 
-  warnForPropDifference = function(
-    propName        ,
-    serverValue       ,
-    clientValue       ,
+  warnForPropDifference = function (
+    propName,
+    serverValue,
+    clientValue,
   ) {
     if (didWarnInvalidHydration) {
       return;
@@ -160,24 +160,24 @@ if (__DEV__) {
     );
   };
 
-  warnForExtraAttributes = function(attributeNames             ) {
+  warnForExtraAttributes = function (attributeNames) {
     if (didWarnInvalidHydration) {
       return;
     }
     didWarnInvalidHydration = true;
     const names = [];
-    attributeNames.forEach(function(name) {
+    attributeNames.forEach(function (name) {
       names.push(name);
     });
     console.error('Extra attributes from the server: %s', names);
   };
 
-  warnForInvalidEventListener = function(registrationName, listener) {
+  warnForInvalidEventListener = function (registrationName, listener) {
     if (listener === false) {
       console.error(
         'Expected `%s` listener to be a function, instead got `false`.\n\n' +
-          'If you used to conditionally omit it with %s={condition && value}, ' +
-          'pass %s={condition ? value : undefined} instead.',
+        'If you used to conditionally omit it with %s={condition && value}, ' +
+        'pass %s={condition ? value : undefined} instead.',
         registrationName,
         registrationName,
         registrationName,
@@ -193,7 +193,7 @@ if (__DEV__) {
 
   // Parse the HTML and read it back to normalize the HTML string so that it
   // can be used for comparison.
-  normalizeHTML = function(parent         , html        ) {
+  normalizeHTML = function (parent, html) {
     // We could have created a separate document here to avoid
     // re-initializing custom elements if they exist. But this breaks
     // how <noscript> is being handled. So we use the same document.
@@ -202,9 +202,9 @@ if (__DEV__) {
       parent.namespaceURI === HTML_NAMESPACE
         ? parent.ownerDocument.createElement(parent.tagName)
         : parent.ownerDocument.createElementNS(
-            (parent.namespaceURI     ),
-            parent.tagName,
-          );
+          (parent.namespaceURI),
+          parent.tagName,
+        );
     testElement.innerHTML = html;
     return testElement.innerHTML;
   };
@@ -218,21 +218,21 @@ if (__DEV__) {
 const NORMALIZE_NEWLINES_REGEX = /\r\n?/g;
 const NORMALIZE_NULL_AND_REPLACEMENT_REGEX = /\u0000|\uFFFD/g;
 
-function normalizeMarkupForTextOrAttribute(markup       )         {
+function normalizeMarkupForTextOrAttribute(markup) {
   if (__DEV__) {
     checkHtmlStringCoercion(markup);
   }
-  const markupString = typeof markup === 'string' ? markup : '' + (markup     );
+  const markupString = typeof markup === 'string' ? markup : '' + (markup);
   return markupString
     .replace(NORMALIZE_NEWLINES_REGEX, '\n')
     .replace(NORMALIZE_NULL_AND_REPLACEMENT_REGEX, '');
 }
 
 export function checkForUnmatchedText(
-  serverText        ,
-  clientText                 ,
-  isConcurrentMode         ,
-  shouldWarnDev         ,
+  serverText,
+  clientText,
+  isConcurrentMode,
+  shouldWarnDev,
 ) {
   const normalizedClientText = normalizeMarkupForTextOrAttribute(clientText);
   const normalizedServerText = normalizeMarkupForTextOrAttribute(serverText);
@@ -261,16 +261,16 @@ export function checkForUnmatchedText(
 }
 
 export function getOwnerDocumentFromRootContainer(
-  rootContainerElement                                       ,
-)           {
+  rootContainerElement,
+) {
   return rootContainerElement.nodeType === DOCUMENT_NODE
-    ? (rootContainerElement     )
+    ? (rootContainerElement)
     : rootContainerElement.ownerDocument;
 }
 
-function noop() {}
+function noop() { }
 
-export function trapClickOnNonInteractiveElement(node             ) {
+export function trapClickOnNonInteractiveElement(node) {
   // Mobile Safari does not fire properly bubble click events on
   // non-interactive elements, which means delegated click listeners do not
   // fire. The workaround for this bug involves attaching an empty click
@@ -284,11 +284,12 @@ export function trapClickOnNonInteractiveElement(node             ) {
 }
 
 function setInitialDOMProperties(
-  tag        ,
-  domElement         ,
-  nextProps        ,
-  isCustomComponentTag         ,
-)       {
+  tag,
+  domElement,
+  nextProps,
+  isCustomComponentTag,
+) {
+  // debugger;
   for (const propKey in nextProps) {
     if (!nextProps.hasOwnProperty(propKey)) {
       continue;
@@ -353,11 +354,11 @@ function setInitialDOMProperties(
 }
 
 function updateDOMProperties(
-  domElement         ,
-  updatePayload            ,
-  wasCustomComponentTag         ,
-  isCustomComponentTag         ,
-)       {
+  domElement,
+  updatePayload,
+  wasCustomComponentTag,
+  isCustomComponentTag,
+) {
   // TODO: Handle wasCustomComponentTag
   for (let i = 0; i < updatePayload.length; i += 2) {
     const propKey = updatePayload[i];
@@ -375,19 +376,19 @@ function updateDOMProperties(
 }
 
 export function createElement(
-  type        ,
-  props        ,
-  rootContainerElement                                       ,
-  parentNamespace        ,
-)          {
+  type,
+  props,
+  rootContainerElement,
+  parentNamespace,
+) {
   let isCustomComponentTag;
 
   // We create tags in the namespace of their parent container, except HTML
   // tags get no namespace.
-  const ownerDocument           = getOwnerDocumentFromRootContainer(
+  const ownerDocument = getOwnerDocumentFromRootContainer(
     rootContainerElement,
   );
-  let domElement         ;
+  let domElement;
   let namespaceURI = parentNamespace;
   if (namespaceURI === HTML_NAMESPACE) {
     namespaceURI = getIntrinsicNamespace(type);
@@ -400,8 +401,8 @@ export function createElement(
       if (!isCustomComponentTag && type !== type.toLowerCase()) {
         console.error(
           '<%s /> is using incorrect casing. ' +
-            'Use PascalCase for React components, ' +
-            'or lowercase for HTML elements.',
+          'Use PascalCase for React components, ' +
+          'or lowercase for HTML elements.',
           type,
         );
       }
@@ -415,19 +416,19 @@ export function createElement(
         if (enableTrustedTypesIntegration && !didWarnScriptTags) {
           console.error(
             'Encountered a script tag while rendering React component. ' +
-              'Scripts inside React components are never executed when rendering ' +
-              'on the client. Consider using template tag instead ' +
-              '(https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).',
+            'Scripts inside React components are never executed when rendering ' +
+            'on the client. Consider using template tag instead ' +
+            '(https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).',
           );
           didWarnScriptTags = true;
         }
       }
       div.innerHTML = '<script><' + '/script>'; // eslint-disable-line
       // This is guaranteed to yield a script element.
-      const firstChild = ((div.firstChild     )                   );
+      const firstChild = ((div.firstChild));
       domElement = div.removeChild(firstChild);
     } else if (typeof props.is === 'string') {
-      domElement = ownerDocument.createElement(type, {is: props.is});
+      domElement = ownerDocument.createElement(type, { is: props.is });
     } else {
       // Separate else branch instead of using `props.is || undefined` above because of a Firefox bug.
       // See discussion in https://github.com/facebook/react/pull/6896
@@ -442,7 +443,7 @@ export function createElement(
       // See https://github.com/facebook/react/issues/13222
       // and https://github.com/facebook/react/issues/14239
       if (type === 'select') {
-        const node = ((domElement     )                   );
+        const node = ((domElement));
         if (props.multiple) {
           node.multiple = true;
         } else if (props.size) {
@@ -464,14 +465,14 @@ export function createElement(
         !isCustomComponentTag &&
         // $FlowFixMe[method-unbinding]
         Object.prototype.toString.call(domElement) ===
-          '[object HTMLUnknownElement]' &&
+        '[object HTMLUnknownElement]' &&
         !hasOwnProperty.call(warnedUnknownTags, type)
       ) {
         warnedUnknownTags[type] = true;
         console.error(
           'The tag <%s> is unrecognized in this browser. ' +
-            'If you meant to render a React component, start its name with ' +
-            'an uppercase letter.',
+          'If you meant to render a React component, start its name with ' +
+          'an uppercase letter.',
           type,
         );
       }
@@ -482,26 +483,26 @@ export function createElement(
 }
 
 export function createTextNode(
-  text        ,
-  rootContainerElement                                       ,
-)       {
+  text,
+  rootContainerElement,
+) {
   return getOwnerDocumentFromRootContainer(rootContainerElement).createTextNode(
     text,
   );
 }
 
 export function setInitialProperties(
-  domElement         ,
-  tag        ,
-  rawProps        ,
-)       {
+  domElement,
+  tag,
+  rawProps,
+) {
   const isCustomComponentTag = isCustomComponent(tag, rawProps);
   if (__DEV__) {
     validatePropertiesInDevelopment(tag, rawProps);
   }
 
   // TODO: Make sure that we check isMounted before firing any of these events.
-  let props        ;
+  let props;
   switch (tag) {
     case 'dialog':
       listenToNonDelegatedEvent('cancel', domElement);
@@ -583,13 +584,13 @@ export function setInitialProperties(
     case 'input':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement     ));
+      track((domElement));
       ReactDOMInputPostMountWrapper(domElement, rawProps, false);
       break;
     case 'textarea':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement     ));
+      track((domElement));
       ReactDOMTextareaPostMountWrapper(domElement, rawProps);
       break;
     case 'option':
@@ -601,7 +602,7 @@ export function setInitialProperties(
     default:
       if (typeof props.onClick === 'function') {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement(((domElement     )             ));
+        trapClickOnNonInteractiveElement(((domElement)));
       }
       break;
   }
@@ -609,19 +610,19 @@ export function setInitialProperties(
 
 // Calculate the diff between the two objects.
 export function diffProperties(
-  domElement         ,
-  tag        ,
-  lastRawProps        ,
-  nextRawProps        ,
-)                      {
+  domElement,
+  tag,
+  lastRawProps,
+  nextRawProps,
+) {
   if (__DEV__) {
     validatePropertiesInDevelopment(tag, nextRawProps);
   }
 
-  let updatePayload                    = null;
+  let updatePayload = null;
 
-  let lastProps        ;
-  let nextProps        ;
+  let lastProps;
+  let nextProps;
   switch (tag) {
     case 'input':
       lastProps = ReactDOMInputGetHostProps(domElement, lastRawProps);
@@ -646,7 +647,7 @@ export function diffProperties(
         typeof nextProps.onClick === 'function'
       ) {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement(((domElement     )             ));
+        trapClickOnNonInteractiveElement(((domElement)));
       }
       break;
   }
@@ -802,12 +803,12 @@ export function diffProperties(
 
 // Apply the diff.
 export function updateProperties(
-  domElement         ,
-  updatePayload            ,
-  tag        ,
-  lastRawProps        ,
-  nextRawProps        ,
-)       {
+  domElement,
+  updatePayload,
+  tag,
+  lastRawProps,
+  nextRawProps,
+) {
   // Update checked *before* name.
   // In the middle of an update, it is possible to have multiple checked.
   // When a checked radio tries to change name, browser makes another radio's checked false.
@@ -849,7 +850,7 @@ export function updateProperties(
   }
 }
 
-function getPossibleStandardName(propName        )                {
+function getPossibleStandardName(propName) {
   if (__DEV__) {
     const lowerCasedName = propName.toLowerCase();
     if (!possibleStandardNames.hasOwnProperty(lowerCasedName)) {
@@ -861,15 +862,15 @@ function getPossibleStandardName(propName        )                {
 }
 
 export function diffHydratedProperties(
-  domElement         ,
-  tag        ,
-  rawProps        ,
-  parentNamespace        ,
-  isConcurrentMode         ,
-  shouldWarnDev         ,
-)                      {
+  domElement,
+  tag,
+  rawProps,
+  parentNamespace,
+  isConcurrentMode,
+  shouldWarnDev,
+) {
   let isCustomComponentTag;
-  let extraAttributeNames             ;
+  let extraAttributeNames;
 
   if (__DEV__) {
     isCustomComponentTag = isCustomComponent(tag, rawProps);
@@ -1171,13 +1172,13 @@ export function diffHydratedProperties(
     case 'input':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement     ));
+      track((domElement));
       ReactDOMInputPostMountWrapper(domElement, rawProps, true);
       break;
     case 'textarea':
       // TODO: Make sure we check if this is still unmounted or do any clean
       // up necessary since we never stop tracking anymore.
-      track((domElement     ));
+      track((domElement));
       ReactDOMTextareaPostMountWrapper(domElement, rawProps);
       break;
     case 'select':
@@ -1191,7 +1192,7 @@ export function diffHydratedProperties(
     default:
       if (typeof rawProps.onClick === 'function') {
         // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        trapClickOnNonInteractiveElement(((domElement     )             ));
+        trapClickOnNonInteractiveElement(((domElement)));
       }
       break;
   }
@@ -1200,17 +1201,17 @@ export function diffHydratedProperties(
 }
 
 export function diffHydratedText(
-  textNode      ,
-  text        ,
-  isConcurrentMode         ,
-)          {
+  textNode,
+  text,
+  isConcurrentMode,
+) {
   const isDifferent = textNode.nodeValue !== text;
   return isDifferent;
 }
 
 export function warnForDeletedHydratableElement(
-  parentNode                                       ,
-  child         ,
+  parentNode,
+  child,
 ) {
   if (__DEV__) {
     if (didWarnInvalidHydration) {
@@ -1226,8 +1227,8 @@ export function warnForDeletedHydratableElement(
 }
 
 export function warnForDeletedHydratableText(
-  parentNode                                       ,
-  child      ,
+  parentNode,
+  child,
 ) {
   if (__DEV__) {
     if (didWarnInvalidHydration) {
@@ -1243,9 +1244,9 @@ export function warnForDeletedHydratableText(
 }
 
 export function warnForInsertedHydratedElement(
-  parentNode                                       ,
-  tag        ,
-  props        ,
+  parentNode,
+  tag,
+  props,
 ) {
   if (__DEV__) {
     if (didWarnInvalidHydration) {
@@ -1261,8 +1262,8 @@ export function warnForInsertedHydratedElement(
 }
 
 export function warnForInsertedHydratedText(
-  parentNode                                       ,
-  text        ,
+  parentNode,
+  text,
 ) {
   if (__DEV__) {
     if (text === '') {
@@ -1285,10 +1286,10 @@ export function warnForInsertedHydratedText(
 }
 
 export function restoreControlledState(
-  domElement         ,
-  tag        ,
-  props        ,
-)       {
+  domElement,
+  tag,
+  props,
+) {
   switch (tag) {
     case 'input':
       ReactDOMInputRestoreControlledState(domElement, props);

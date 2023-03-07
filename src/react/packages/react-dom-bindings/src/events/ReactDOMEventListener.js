@@ -7,12 +7,12 @@
  *      
  */
 
-                                                                             
-                                                               
-                                                                              
-                                                                              
-                                                          
-import {enableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay} from 'shared/ReactFeatureFlags';
+
+
+
+
+
+import { enableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay } from 'shared/ReactFeatureFlags';
 import {
   isDiscreteEventThatRequiresHydration,
   queueDiscreteEvent,
@@ -26,8 +26,8 @@ import {
   getContainerFromFiber,
   getSuspenseInstanceFromFiber,
 } from 'react-reconciler/src/ReactFiberTreeReflection';
-import {HostRoot, SuspenseComponent} from 'react-reconciler/src/ReactWorkTags';
-import {                       IS_CAPTURE_PHASE} from './EventSystemFlags';
+import { HostRoot, SuspenseComponent } from 'react-reconciler/src/ReactWorkTags';
+import { IS_CAPTURE_PHASE } from './EventSystemFlags';
 
 import getEventTarget from './getEventTarget';
 import {
@@ -35,7 +35,7 @@ import {
   getClosestInstanceFromNode,
 } from '../client/ReactDOMComponentTree';
 
-import {dispatchEventForPluginEventSystem} from './DOMPluginEventSystem';
+import { dispatchEventForPluginEventSystem } from './DOMPluginEventSystem';
 
 import {
   getCurrentPriorityLevel as getCurrentSchedulerPriorityLevel,
@@ -54,28 +54,28 @@ import {
   setCurrentUpdatePriority,
 } from 'react-reconciler/src/ReactEventPriorities';
 import ReactSharedInternals from 'shared/ReactSharedInternals';
-import {isRootDehydrated} from 'react-reconciler/src/ReactFiberShellHydration';
+import { isRootDehydrated } from 'react-reconciler/src/ReactFiberShellHydration';
 
-const {ReactCurrentBatchConfig} = ReactSharedInternals;
+const { ReactCurrentBatchConfig } = ReactSharedInternals;
 
 // TODO: can we stop exporting these?
-export let _enabled          = true;
+export let _enabled = true;
 
 // This is exported in FB builds for use by legacy FB layer infra.
 // We'd like to remove this but it's not clear if this is safe.
-export function setEnabled(enabled          )       {
+export function setEnabled(enabled) {
   _enabled = !!enabled;
 }
 
-export function isEnabled()          {
+export function isEnabled() {
   return _enabled;
 }
 
 export function createEventListenerWrapper(
-  targetContainer             ,
-  domEventName              ,
-  eventSystemFlags                  ,
-)           {
+  targetContainer,
+  domEventName,
+  eventSystemFlags,
+) {
   return dispatchEvent.bind(
     null,
     domEventName,
@@ -85,10 +85,10 @@ export function createEventListenerWrapper(
 }
 
 export function createEventListenerWrapperWithPriority(
-  targetContainer             ,
-  domEventName              ,
-  eventSystemFlags                  ,
-)           {
+  targetContainer,
+  domEventName,
+  eventSystemFlags,
+) {
   const eventPriority = getEventPriority(domEventName);
   let listenerWrapper;
   switch (eventPriority) {
@@ -148,11 +148,11 @@ function dispatchContinuousEvent(
 }
 
 export function dispatchEvent(
-  domEventName              ,
-  eventSystemFlags                  ,
-  targetContainer             ,
-  nativeEvent                ,
-)       {
+  domEventName,
+  eventSystemFlags,
+  targetContainer,
+  nativeEvent,
+) {
   if (!_enabled) {
     return;
   }
@@ -174,10 +174,10 @@ export function dispatchEvent(
 }
 
 function dispatchEventOriginal(
-  domEventName              ,
-  eventSystemFlags                  ,
-  targetContainer             ,
-  nativeEvent                ,
+  domEventName,
+  eventSystemFlags,
+  targetContainer,
+  nativeEvent,
 ) {
   // TODO: replaying capture phase events is currently broken
   // because we used to do it during top-level native bubble handlers
@@ -264,10 +264,10 @@ function dispatchEventOriginal(
 }
 
 function dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay(
-  domEventName              ,
-  eventSystemFlags                  ,
-  targetContainer             ,
-  nativeEvent                ,
+  domEventName,
+  eventSystemFlags,
+  targetContainer,
+  nativeEvent,
 ) {
   let blockedOn = findInstanceBlockingEvent(
     domEventName,
@@ -349,16 +349,16 @@ function dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEve
   );
 }
 
-export let return_targetInst               = null;
+export let return_targetInst = null;
 
 // Returns a SuspenseInstance or Container if it's blocked.
 // The return_targetInst field above is conceptually part of the return value.
 export function findInstanceBlockingEvent(
-  domEventName              ,
-  eventSystemFlags                  ,
-  targetContainer             ,
-  nativeEvent                ,
-)                                      {
+  domEventName,
+  eventSystemFlags,
+  targetContainer,
+  nativeEvent,
+) {
   // TODO: Warn if _enabled is false.
 
   return_targetInst = null;
@@ -387,7 +387,7 @@ export function findInstanceBlockingEvent(
         // TODO: Warn.
         targetInst = null;
       } else if (tag === HostRoot) {
-        const root            = nearestMounted.stateNode;
+        const root = nearestMounted.stateNode;
         if (isRootDehydrated(root)) {
           // If this happens during a replay something went wrong and it might block
           // the whole system.
@@ -408,7 +408,7 @@ export function findInstanceBlockingEvent(
   return null;
 }
 
-export function getEventPriority(domEventName              )                {
+export function getEventPriority(domEventName) {
   switch (domEventName) {
     // Used by SimpleEventPlugin:
     case 'cancel':

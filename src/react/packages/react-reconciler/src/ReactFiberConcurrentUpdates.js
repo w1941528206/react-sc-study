@@ -7,47 +7,47 @@
  *      
  */
 
-                                                           
-             
-                           
-                       
-                           
-             
-                            
-                        
-                                      
-                                                  
-                                                                      
+
+
+
+
+
+
+
+
+
+
+
 
 import {
   warnAboutUpdateOnNotYetMountedFiberInDEV,
   throwIfInfiniteUpdateLoopDetected,
   getWorkInProgressRoot,
 } from './ReactFiberWorkLoop';
-import {NoLane, NoLanes, mergeLanes, markHiddenUpdate} from './ReactFiberLane';
-import {NoFlags, Placement, Hydrating} from './ReactFiberFlags';
-import {HostRoot, OffscreenComponent} from './ReactWorkTags';
-import {OffscreenVisible} from './ReactFiberOffscreenComponent';
+import { NoLane, NoLanes, mergeLanes, markHiddenUpdate } from './ReactFiberLane';
+import { NoFlags, Placement, Hydrating } from './ReactFiberFlags';
+import { HostRoot, OffscreenComponent } from './ReactWorkTags';
+import { OffscreenVisible } from './ReactFiberOffscreenComponent';
 
-                                
-                         
-             
-  
 
-                        
-                                   
-  
+
+
+
+
+
+
+
 
 // If a render is in progress, and we receive an update from a concurrent event,
 // we wait until the current render is over (either finished or interrupted)
 // before adding it to the fiber/hook queue. Push to this array so we can
 // access the queue, fiber, update, et al later.
-const concurrentQueues             = [];
+const concurrentQueues = [];
 let concurrentQueuesIndex = 0;
 
-let concurrentlyUpdatedLanes        = NoLanes;
+let concurrentlyUpdatedLanes = NoLanes;
 
-export function finishQueueingConcurrentUpdates()       {
+export function finishQueueingConcurrentUpdates() {
   const endIndex = concurrentQueuesIndex;
   concurrentQueuesIndex = 0;
 
@@ -55,13 +55,13 @@ export function finishQueueingConcurrentUpdates()       {
 
   let i = 0;
   while (i < endIndex) {
-    const fiber        = concurrentQueues[i];
+    const fiber = concurrentQueues[i];
     concurrentQueues[i++] = null;
-    const queue                  = concurrentQueues[i];
+    const queue = concurrentQueues[i];
     concurrentQueues[i++] = null;
-    const update                   = concurrentQueues[i];
+    const update = concurrentQueues[i];
     concurrentQueues[i++] = null;
-    const lane       = concurrentQueues[i];
+    const lane = concurrentQueues[i];
     concurrentQueues[i++] = null;
 
     if (queue !== null && update !== null) {
@@ -82,15 +82,15 @@ export function finishQueueingConcurrentUpdates()       {
   }
 }
 
-export function getConcurrentlyUpdatedLanes()        {
+export function getConcurrentlyUpdatedLanes() {
   return concurrentlyUpdatedLanes;
 }
 
 function enqueueUpdate(
-  fiber       ,
-  queue                        ,
-  update                         ,
-  lane      ,
+  fiber,
+  queue,
+  update,
+  lane,
 ) {
   // Don't update the `childLanes` on the return path yet. If we already in
   // the middle of rendering, wait until after it has completed.
@@ -111,29 +111,29 @@ function enqueueUpdate(
   }
 }
 
-export function enqueueConcurrentHookUpdate      (
-  fiber       ,
-  queue                 ,
-  update                  ,
-  lane      ,
-)                   {
-  const concurrentQueue                  = (queue     );
-  const concurrentUpdate                   = (update     );
+export function enqueueConcurrentHookUpdate(
+  fiber,
+  queue,
+  update,
+  lane,
+) {
+  const concurrentQueue = (queue);
+  const concurrentUpdate = (update);
   enqueueUpdate(fiber, concurrentQueue, concurrentUpdate, lane);
   return getRootForUpdatedFiber(fiber);
 }
 
-export function enqueueConcurrentHookUpdateAndEagerlyBailout      (
-  fiber       ,
-  queue                 ,
-  update                  ,
-)       {
+export function enqueueConcurrentHookUpdateAndEagerlyBailout(
+  fiber,
+  queue,
+  update,
+) {
   // This function is used to queue an update that doesn't need a rerender. The
   // only reason we queue it is in case there's a subsequent higher priority
   // update that causes it to be rebased.
   const lane = NoLane;
-  const concurrentQueue                  = (queue     );
-  const concurrentUpdate                   = (update     );
+  const concurrentQueue = (queue);
+  const concurrentUpdate = (update);
   enqueueUpdate(fiber, concurrentQueue, concurrentUpdate, lane);
 
   // Usually we can rely on the upcoming render phase to process the concurrent
@@ -149,22 +149,22 @@ export function enqueueConcurrentHookUpdateAndEagerlyBailout      (
   }
 }
 
-export function enqueueConcurrentClassUpdate       (
-  fiber       ,
-  queue                   ,
-  update                    ,
-  lane      ,
-)                   {
-  const concurrentQueue                  = (queue     );
-  const concurrentUpdate                   = (update     );
+export function enqueueConcurrentClassUpdate(
+  fiber,
+  queue,
+  update,
+  lane,
+) {
+  const concurrentQueue = (queue);
+  const concurrentUpdate = (update);
   enqueueUpdate(fiber, concurrentQueue, concurrentUpdate, lane);
   return getRootForUpdatedFiber(fiber);
 }
 
 export function enqueueConcurrentRenderForLane(
-  fiber       ,
-  lane      ,
-)                   {
+  fiber,
+  lane,
+) {
   enqueueUpdate(fiber, null, null, lane);
   return getRootForUpdatedFiber(fiber);
 }
@@ -172,9 +172,9 @@ export function enqueueConcurrentRenderForLane(
 // Calling this function outside this module should only be done for backwards
 // compatibility and should always be accompanied by a warning.
 export function unsafe_markUpdateLaneFromFiberToRoot(
-  sourceFiber       ,
-  lane      ,
-)                   {
+  sourceFiber,
+  lane,
+) {
   // NOTE: For Hyrum's Law reasons, if an infinite update loop is detected, it
   // should throw before `markUpdateLaneFromFiberToRoot` is called. But this is
   // undefined behavior and we can change it if we need to; it just so happens
@@ -186,10 +186,10 @@ export function unsafe_markUpdateLaneFromFiberToRoot(
 }
 
 function markUpdateLaneFromFiberToRoot(
-  sourceFiber       ,
-  update                         ,
-  lane      ,
-)       {
+  sourceFiber,
+  update,
+  lane,
+) {
   // Update the source fiber's lanes
   sourceFiber.lanes = mergeLanes(sourceFiber.lanes, lane);
   let alternate = sourceFiber.alternate;
@@ -225,7 +225,7 @@ function markUpdateLaneFromFiberToRoot(
       // This case is always accompanied by a warning, but we still need to
       // account for it. (There may be other cases that we haven't discovered,
       // too.)
-      const offscreenInstance                           = parent.stateNode;
+      const offscreenInstance = parent.stateNode;
       if (
         offscreenInstance !== null &&
         !(offscreenInstance._visibility & OffscreenVisible)
@@ -239,12 +239,12 @@ function markUpdateLaneFromFiberToRoot(
   }
 
   if (isHidden && update !== null && node.tag === HostRoot) {
-    const root            = node.stateNode;
+    const root = node.stateNode;
     markHiddenUpdate(root, update, lane);
   }
 }
 
-function getRootForUpdatedFiber(sourceFiber       )                   {
+function getRootForUpdatedFiber(sourceFiber) {
   // TODO: We will detect and infinite update loop and throw even if this fiber
   // has already unmounted. This isn't really necessary but it happens to be the
   // current behavior we've used for several release cycles. Consider not
@@ -267,10 +267,10 @@ function getRootForUpdatedFiber(sourceFiber       )                   {
     node = parent;
     parent = node.return;
   }
-  return node.tag === HostRoot ? (node.stateNode           ) : null;
+  return node.tag === HostRoot ? (node.stateNode) : null;
 }
 
-function detectUpdateOnUnmountedFiber(sourceFiber       , parent       ) {
+function detectUpdateOnUnmountedFiber(sourceFiber, parent) {
   if (__DEV__) {
     const alternate = parent.alternate;
     if (

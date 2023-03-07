@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="root">
+    <div id="parent">
+      <div id="child">
+        点击
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const root = document.getElementById('root');
+    const parent = document.getElementById('parent');
+    const child = document.getElementById('child');
+
+    function dispatchEvent(event, isCapture) {
+      let paths = [];
+      let currentTarget = event.target;
+      while (currentTarget) {
+        paths.push(currentTarget);
+        currentTarget = currentTarget.parentNode;
+      }
+
+      if (isCapture) {
+        for (let i = paths.length - 1; i >= 0; i--) {
+          let handler = paths[i].onClickCapture;
+          handler && handler(event);
+        }
+      } else {
+        for (let i = 0; i < paths.length; i++) {
+          let handler = paths[i].onClick;
+          handler && handler(event);
+        }
+      }
+    }
+
+    function childBubble(e) {
+      console.log('childBubble', e);
+    }
+
+    function childCapture(e) {
+      console.log('childCapture', e);
+    }
+
+    function parentBubble(e) {
+      console.log('parentBubble', e);
+    }
+
+    function parentCapture(e) {
+      console.log('parentCapture', e);
+    }
+
+    child.onClick = childBubble;
+    child.onClickCapture = childCapture;
+
+    parent.onClick = parentBubble;
+    parent.onClickCapture = parentCapture;
+
+    root.addEventListener('click', (event) => dispatchEvent(event, true), true);
+    root.addEventListener('click', (event) => dispatchEvent(event, false), false);
+  </script>
+</body>
+
+</html>

@@ -175,6 +175,7 @@ ReactDOMHydrationRoot.prototype.unmount = ReactDOMRoot.prototype.unmount = funct
   }
 };
 
+// sc-study:7 23.1.5 createRoot
 export function createRoot(
   container,
   options,
@@ -243,6 +244,9 @@ export function createRoot(
     onRecoverableError,
     transitionCallbacks,
   );
+
+  // console.log(root, 'this is root');
+
   markContainerAsRoot(root.current, container);
 
   if (enableFloat) {
@@ -255,8 +259,13 @@ export function createRoot(
       : container;
   listenToAllSupportedEvents(rootContainerElement);
 
-  // $FlowFixMe[invalid-constructor] Flow no longer supports calling new on functions
-  return new ReactDOMRoot(root);
+  // $FlowFixMe[invalid-constructor] Flow no longer supports calling new on functions 没懂
+
+  // console.log(new ReactDOMRoot(root));
+
+  // 整个项目需要有个根 所有内容都在这个下面
+
+  return new ReactDOMRoot(root); // 实例 _internalRoot = root
 }
 
 function ReactDOMHydrationRoot(internalRoot) {

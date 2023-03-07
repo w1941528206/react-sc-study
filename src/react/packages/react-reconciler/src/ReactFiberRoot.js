@@ -7,18 +7,18 @@
  *      
  */
 
-                                                     
-             
-            
-                             
-                             
-                              
-                                             
-                                                      
-                                                      
 
-import {noTimeout, supportsHydration} from './ReactFiberHostConfig';
-import {createHostRootFiber} from './ReactFiber';
+
+
+
+
+
+
+
+
+
+import { noTimeout, supportsHydration } from './ReactFiberHostConfig';
+import { createHostRootFiber } from './ReactFiber';
 import {
   NoLane,
   NoLanes,
@@ -34,16 +34,17 @@ import {
   enableUpdaterTracking,
   enableTransitionTracing,
 } from 'shared/ReactFeatureFlags';
-import {initializeUpdateQueue} from './ReactFiberClassUpdateQueue';
-import {LegacyRoot, ConcurrentRoot} from './ReactRootTags';
-import {createCache, retainCache} from './ReactFiberCacheComponent';
+import { initializeUpdateQueue } from './ReactFiberClassUpdateQueue';
+import { LegacyRoot, ConcurrentRoot } from './ReactRootTags';
+import { createCache, retainCache } from './ReactFiberCacheComponent';
 
-                         
-               
-                        
-               
-  
 
+
+
+
+
+// sc-study:10 FiberRootNode 就是为了创建根节点 里面有 containerInfo 容器信息
+// 后面根 fiber 的dom节点 就指向 FiberRootNode
 function FiberRootNode(
   containerInfo,
   tag,
@@ -129,29 +130,30 @@ function FiberRootNode(
 }
 
 export function createFiberRoot(
-  containerInfo           ,
-  tag         ,
-  hydrate         ,
-  initialChildren               ,
-  hydrationCallbacks                                   ,
-  isStrictMode         ,
-  concurrentUpdatesByDefaultOverride                ,
+  containerInfo,
+  tag,
+  hydrate,
+  initialChildren,
+  hydrationCallbacks,
+  isStrictMode,
+  concurrentUpdatesByDefaultOverride,
   // TODO: We have several of these arguments that are conceptually part of the
   // host config, but because they are passed in at runtime, we have to thread
   // them through the root constructor. Perhaps we should put them all into a
   // single type, like a DynamicHostConfig that is defined by the renderer.
-  identifierPrefix        ,
-  onRecoverableError                                 ,
-  transitionCallbacks                                   ,
-)            {
+  identifierPrefix,
+  onRecoverableError,
+  transitionCallbacks,
+) {
+  // sc0study: 10
   // $FlowFixMe[invalid-constructor] Flow no longer supports calling new on functions
-  const root            = (new FiberRootNode(
+  const root = new FiberRootNode(
     containerInfo,
     tag,
     hydrate,
     identifierPrefix,
     onRecoverableError,
-  )     );
+  );
   if (enableSuspenseCallback) {
     root.hydrationCallbacks = hydrationCallbacks;
   }
@@ -162,6 +164,8 @@ export function createFiberRoot(
 
   // Cyclic construction. This cheats the type system right now because
   // stateNode is any.
+
+  // 未初始化的fiber
   const uninitializedFiber = createHostRootFiber(
     tag,
     isStrictMode,
@@ -183,17 +187,17 @@ export function createFiberRoot(
     // retained separately.
     root.pooledCache = initialCache;
     retainCache(initialCache);
-    const initialState            = {
+    const initialState = {
       element: initialChildren,
       isDehydrated: hydrate,
       cache: initialCache,
     };
     uninitializedFiber.memoizedState = initialState;
   } else {
-    const initialState            = {
+    const initialState = {
       element: initialChildren,
       isDehydrated: hydrate,
-      cache: (null     ), // not enabled yet
+      cache: (null), // not enabled yet
     };
     uninitializedFiber.memoizedState = initialState;
   }

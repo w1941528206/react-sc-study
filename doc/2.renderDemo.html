@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script>
+    const vDom = {
+      type: 'div',
+      key: 'A1',
+      props: {
+        id: 'A1',
+        children: [{
+          type: 'div',
+          key: 'B1',
+          props: {
+            id: 'B1',
+            children: [{
+              type: 'div',
+              key: 'C1',
+              props: { id: 'C1' }
+            }, {
+              type: 'div',
+              key: 'C2',
+              props: { id: 'C2' }
+            }]
+          }
+        }]
+      }
+    }
+
+    function render(vDom, container) {
+      let dom = document.createElement(vDom.type);
+      Object.keys(vDom.props).filter(key => key !== 'children').forEach(key => dom[key] = vDom.props[key]);
+      if (Array.isArray(vDom.props.children)) {
+        vDom.props.children.forEach(child => render(child, dom));
+      }
+      container.appendChild(dom);
+    }
+    render(vDom, document.getElementById('root'));
+  </script>
+</body>
+
+</html>

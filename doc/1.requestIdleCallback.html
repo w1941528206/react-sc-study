@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div style="height: 200vh;"></div>
+  <script>
+    function sleep(duration) {
+      for (let t = Date.now(); Date.now() - t <= duration;) { }
+    }
+
+    const works = [
+      () => {
+        console.log('第一个任务开始');
+        sleep(10);
+        console.log('第一个任务结束');
+      },
+      () => {
+        console.log('第二个任务开始');
+        sleep(5);
+        console.log('第二个任务结束');
+      },
+      () => {
+        console.log('第三个任务开始');
+        sleep(5);
+        console.log('第三个任务结束');
+      },
+    ]
+
+    function performUnitOfWork() {
+      let work = works.shift();
+      work();
+    }
+
+    function workLoop(deadline) {
+      console.log(`本帧剩余时间是: ${deadline.timeRemaining()}`);
+
+      while (deadline.timeRemaining() > 1 && works.length) {
+        performUnitOfWork();
+      }
+
+      if (works.length > 0) {
+        console.log(`只剩下${deadline.timeRemaining()}ms, 剩余时间不足, 等待浏览器下次空闲时帮我调用`);
+        requestIdleCallback(workLoop);
+      }
+    }
+
+    requestIdleCallback(workLoop);
+
+  </script>
+</body>
+
+</html>

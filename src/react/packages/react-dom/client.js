@@ -22,9 +22,10 @@ import {
   __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED as Internals,
 } from './';
 
+// sc-study:6 23.1.5 createRoot 创建根
 export function createRoot(
-  container,
-  options,
+  container, // div root 真实dom
+  options, // TODO:
 ) {
   if (__DEV__) {
     Internals.usingClientEntryPoint = true;

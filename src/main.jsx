@@ -3,11 +3,20 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-// debugger;
-
 const element = (
-  <div key='hello'>hello <span style={{ color: 'pink' }}>react</span></div>
+  <div key='hello' onClick={() => console.log('this is hello div component')}>
+    hello <span style={{ color: 'pink' }}>react</span>
+  </div>
 );
+
+function FunctionComponent() {
+  const [state, dispatch] = React.useReducer(() => { }, 123);
+  return (
+    <div key='hello'>
+      hello <span style={{ color: 'pink' }}>react</span>
+    </div>
+  );
+}
 
 /**
  * jsx: https://babeljs.io/repl#?browsers=defaults%2C%20not%20ie%2011%2C%20not%20ie_mob%2011&build=&builtIns=false&corejs=3.21&spec=false&loose=false&code_lz=DwEwlgbgfAFgpgGwQewAQCc4EMDGAXYAenGgG4g&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=false&targets=&version=7.20.11&externalPlugins=&assumptions=%7B%7D
@@ -18,8 +27,13 @@ const element = (
  * jsx('div', { children: 'hello react' });
  */
 
-console.log(element);
+// console.log(element);
 
+// debugger;
 const root = createRoot(document.getElementById('root'));
 
-root.render(element);
+const functionElement = <FunctionComponent />;
+
+// console.log(functionElement.type());
+
+root.render(functionElement);

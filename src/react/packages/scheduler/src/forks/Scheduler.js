@@ -9,7 +9,7 @@
 
 /* eslint-disable no-var */
 
-                                                          
+
 
 import {
   enableSchedulerDebugging,
@@ -21,7 +21,7 @@ import {
   maxYieldMs,
 } from '../SchedulerFeatureFlags';
 
-import {push, pop, peek} from '../SchedulerMinHeap';
+import { push, pop, peek } from '../SchedulerMinHeap';
 
 // TODO: Use symbols?
 import {
@@ -44,19 +44,19 @@ import {
   startLoggingProfilingEvents,
 } from '../SchedulerProfiling';
 
-                                            
 
-             
-             
-                            
-                               
-                    
-                         
-                    
-                     
-  
 
-let getCurrentTime                                    ;
+
+
+
+
+
+
+
+
+
+
+let getCurrentTime;
 const hasPerformanceNow =
   // $FlowFixMe[method-unbinding]
   typeof performance === 'object' && typeof performance.now === 'function';
@@ -85,8 +85,8 @@ var LOW_PRIORITY_TIMEOUT = 10000;
 var IDLE_PRIORITY_TIMEOUT = maxSigned31BitInt;
 
 // Tasks are stored on a min heap
-var taskQueue              = [];
-var timerQueue              = [];
+var taskQueue = [];
+var timerQueue = [];
 
 // Incrementing id counter. Used to maintain insertion order.
 var taskIdCounter = 1;
@@ -112,16 +112,16 @@ const localSetImmediate =
 
 const isInputPending =
   typeof navigator !== 'undefined' &&
-  // $FlowFixMe[prop-missing]
-  navigator.scheduling !== undefined &&
-  // $FlowFixMe[incompatible-type]
-  navigator.scheduling.isInputPending !== undefined
+    // $FlowFixMe[prop-missing]
+    navigator.scheduling !== undefined &&
+    // $FlowFixMe[incompatible-type]
+    navigator.scheduling.isInputPending !== undefined
     ? navigator.scheduling.isInputPending.bind(navigator.scheduling)
     : null;
 
-const continuousOptions = {includeContinuous: enableIsInputPendingContinuous};
+const continuousOptions = { includeContinuous: enableIsInputPendingContinuous };
 
-function advanceTimers(currentTime        ) {
+function advanceTimers(currentTime) {
   // Check for tasks that are no longer delayed and add them to the queue.
   let timer = peek(timerQueue);
   while (timer !== null) {
@@ -145,7 +145,7 @@ function advanceTimers(currentTime        ) {
   }
 }
 
-function handleTimeout(currentTime        ) {
+function handleTimeout(currentTime) {
   isHostTimeoutScheduled = false;
   advanceTimers(currentTime);
 
@@ -162,7 +162,7 @@ function handleTimeout(currentTime        ) {
   }
 }
 
-function flushWork(hasTimeRemaining         , initialTime        ) {
+function flushWork(hasTimeRemaining, initialTime) {
   if (enableProfiling) {
     markSchedulerUnsuspended(initialTime);
   }
@@ -206,7 +206,7 @@ function flushWork(hasTimeRemaining         , initialTime        ) {
   }
 }
 
-function workLoop(hasTimeRemaining         , initialTime        ) {
+function workLoop(hasTimeRemaining, initialTime) {
   let currentTime = initialTime;
   advanceTimers(currentTime);
   currentTask = peek(taskQueue);
@@ -276,10 +276,10 @@ function workLoop(hasTimeRemaining         , initialTime        ) {
   }
 }
 
-function unstable_runWithPriority   (
-  priorityLevel               ,
-  eventHandler         ,
-)    {
+function unstable_runWithPriority(
+  priorityLevel,
+  eventHandler,
+) {
   switch (priorityLevel) {
     case ImmediatePriority:
     case UserBlockingPriority:
@@ -301,7 +301,7 @@ function unstable_runWithPriority   (
   }
 }
 
-function unstable_next   (eventHandler         )    {
+function unstable_next(eventHandler) {
   var priorityLevel;
   switch (currentPriorityLevel) {
     case ImmediatePriority:
@@ -326,10 +326,10 @@ function unstable_next   (eventHandler         )    {
   }
 }
 
-function unstable_wrapCallback                               (callback   )    {
+function unstable_wrapCallback(callback) {
   var parentPriorityLevel = currentPriorityLevel;
   // $FlowFixMe[incompatible-return]
-  return function() {
+  return function () {
     // This is a fork of runWithPriority, inlined for performance.
     var previousPriorityLevel = currentPriorityLevel;
     currentPriorityLevel = parentPriorityLevel;
@@ -343,10 +343,10 @@ function unstable_wrapCallback                               (callback   )    {
 }
 
 function unstable_scheduleCallback(
-  priorityLevel               ,
-  callback          ,
-  options                  ,
-)       {
+  priorityLevel,
+  callback,
+  options,
+) {
   var currentTime = getCurrentTime();
 
   var startTime;
@@ -383,7 +383,7 @@ function unstable_scheduleCallback(
 
   var expirationTime = startTime + timeout;
 
-  var newTask       = {
+  var newTask = {
     id: taskIdCounter++,
     callback,
     priorityLevel,
@@ -440,11 +440,11 @@ function unstable_continueExecution() {
   }
 }
 
-function unstable_getFirstCallbackNode()              {
+function unstable_getFirstCallbackNode() {
   return peek(taskQueue);
 }
 
-function unstable_cancelCallback(task      ) {
+function unstable_cancelCallback(task) {
   if (enableProfiling) {
     if (task.isQueued) {
       const currentTime = getCurrentTime();
@@ -459,18 +459,18 @@ function unstable_cancelCallback(task      ) {
   task.callback = null;
 }
 
-function unstable_getCurrentPriorityLevel()                {
+function unstable_getCurrentPriorityLevel() {
   return currentPriorityLevel;
 }
 
 let isMessageLoopRunning = false;
-let scheduledHostCallback 
-        
-      
-                                
-                                                
-                  = null;
-let taskTimeoutID            = (-1     );
+let scheduledHostCallback
+
+
+
+
+  = null;
+let taskTimeoutID = (-1);
 
 // Scheduler periodically yields in case there is other work on the main
 // thread, like user events. By default, it yields multiple times per frame.
@@ -483,7 +483,7 @@ let startTime = -1;
 
 let needsPaint = false;
 
-function shouldYieldToHost()          {
+function shouldYieldToHost() {
   const timeElapsed = getCurrentTime() - startTime;
   if (timeElapsed < frameInterval) {
     // The main thread has only been blocked for a really short amount of time;
@@ -543,12 +543,12 @@ function requestPaint() {
   // Since we yield every frame regardless, `requestPaint` has no effect.
 }
 
-function forceFrameRate(fps        ) {
+function forceFrameRate(fps) {
   if (fps < 0 || fps > 125) {
     // Using console['error'] to evade Babel and ESLint
     console['error'](
       'forceFrameRate takes a positive int between 0 and 125, ' +
-        'forcing frame rates higher than 125 fps is not supported',
+      'forcing frame rates higher than 125 fps is not supported',
     );
     return;
   }
@@ -637,7 +637,7 @@ function requestHostCallback(callback) {
   }
 }
 
-function requestHostTimeout(callback, ms        ) {
+function requestHostTimeout(callback, ms) {
   // $FlowFixMe[not-a-function] nullable value
   taskTimeoutID = localSetTimeout(() => {
     callback(getCurrentTime());
@@ -647,7 +647,7 @@ function requestHostTimeout(callback, ms        ) {
 function cancelHostTimeout() {
   // $FlowFixMe[not-a-function] nullable value
   localClearTimeout(taskTimeoutID);
-  taskTimeoutID = ((-1     )           );
+  taskTimeoutID = ((-1));
 }
 
 export {
@@ -671,12 +671,12 @@ export {
   forceFrameRate as unstable_forceFrameRate,
 };
 
-export const unstable_Profiling   
-                                      
-                                                   
-         = enableProfiling
-  ? {
+export const unstable_Profiling
+
+
+  = enableProfiling
+    ? {
       startLoggingProfilingEvents,
       stopLoggingProfilingEvents,
     }
-  : null;
+    : null;
