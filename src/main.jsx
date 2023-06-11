@@ -3,11 +3,11 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-const element = (
-  <div key='hello' onClick={() => console.log('this is hello div component')}>
-    hello <span style={{ color: 'pink' }}>react</span>
-  </div>
-);
+// const element = (
+//   <div key='hello' onClick={() => console.log('this is hello div component')}>
+//     hello <span style={{ color: 'pink' }}>react</span>
+//   </div>
+// );
 
 function FunctionComponent() {
   const [state, dispatch] = React.useReducer(() => { }, 123);
@@ -29,11 +29,9 @@ function FunctionComponent() {
 
 // console.log(element);
 
-// debugger;
 const root = createRoot(document.getElementById('root'));
 
 const functionElement = <FunctionComponent />;
 
-// console.log(functionElement.type());
-
+// debugger;
 root.render(functionElement);

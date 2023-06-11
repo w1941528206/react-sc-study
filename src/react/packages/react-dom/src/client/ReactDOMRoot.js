@@ -95,10 +95,12 @@ function ReactDOMRoot(internalRoot) {
   this._internalRoot = internalRoot;
 }
 
+
 // $FlowFixMe[prop-missing] found when upgrading Flow
 ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render = function (
   children,
 ) {
+  // debugger;
   const root = this._internalRoot;
   if (root === null) {
     throw new Error('Cannot update an unmounted root.');

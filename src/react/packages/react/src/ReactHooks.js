@@ -4,24 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- *      
+ *
  */
-
-
-
-
-
-
-
-
-
-
 
 import ReactCurrentDispatcher from './ReactCurrentDispatcher';
 import ReactCurrentCache from './ReactCurrentCache';
-
-
-
 
 function resolveDispatcher() {
   const dispatcher = ReactCurrentDispatcher.current;
@@ -54,8 +41,7 @@ export function getCacheSignal() {
     // It's safer than erroring early at runtime.
     const controller = new AbortController();
     const reason = new Error(
-      'This CacheSignal was requested outside React which means that it is ' +
-      'immediately aborted.',
+      'This CacheSignal was requested outside React which means that it is ' + 'immediately aborted.'
     );
     // $FlowFixMe Flow doesn't yet know about this argument.
     controller.abort(reason);
@@ -77,19 +63,19 @@ export function useContext(Context) {
   const dispatcher = resolveDispatcher();
   if (__DEV__) {
     // TODO: add a more generic warning for invalid values.
-    if ((Context)._context !== undefined) {
-      const realContext = (Context)._context;
+    if (Context._context !== undefined) {
+      const realContext = Context._context;
       // Don't deduplicate because this legitimately causes bugs
       // and nobody should be using this in existing code.
       if (realContext.Consumer === Context) {
         console.error(
           'Calling useContext(Context.Consumer) is not supported, may cause bugs, and will be ' +
-          'removed in a future major release. Did you mean to call useContext(Context) instead?',
+            'removed in a future major release. Did you mean to call useContext(Context) instead?'
         );
       } else if (realContext.Provider === Context) {
         console.error(
           'Calling useContext(Context.Provider) is not supported. ' +
-          'Did you mean to call useContext(Context) instead?',
+            'Did you mean to call useContext(Context) instead?'
         );
       }
     }
@@ -97,18 +83,31 @@ export function useContext(Context) {
   return dispatcher.useContext(Context);
 }
 
-export function useState(
-  initialState,
-) {
+export function useState(initialState) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useState(initialState);
 }
 
 export function useReducer(
-  reducer,
-  initialArg,
-  init,
+  reducer, // 处理器 根据老状态和动作计算新状态
+  initialArg, // 初始值 初始状态
+  init
 ) {
+  // ReactCurrentDispatcher = { current: null };
+
+  /**
+   * ReactSharedInternals
+   * __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
+   * react 共享的内部变量
+   * ReactSharedInternals = {
+   *  ReactCurrentDispatcher, 会有别的地方给这个 current 赋值
+   *
+   * react-reconciler/ReactFiberHooks.js
+   * renderWithHooks
+   *  ReactCurrentDispatcher.current = HooksDisPatcherOnMount;
+   * }
+   */
+
   const dispatcher = resolveDispatcher();
   return dispatcher.useReducer(reducer, initialArg, init);
 }
@@ -118,59 +117,37 @@ export function useRef(initialValue) {
   return dispatcher.useRef(initialValue);
 }
 
-export function useEffect(
-  create,
-  deps,
-) {
+export function useEffect(create, deps) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useEffect(create, deps);
 }
 
-export function useInsertionEffect(
-  create,
-  deps,
-) {
+export function useInsertionEffect(create, deps) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useInsertionEffect(create, deps);
 }
 
-export function useLayoutEffect(
-  create,
-  deps,
-) {
+export function useLayoutEffect(create, deps) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useLayoutEffect(create, deps);
 }
 
-export function useCallback(
-  callback,
-  deps,
-) {
+export function useCallback(callback, deps) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useCallback(callback, deps);
 }
 
-export function useMemo(
-  create,
-  deps,
-) {
+export function useMemo(create, deps) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useMemo(create, deps);
 }
 
-export function useImperativeHandle(
-  ref,
-  create,
-  deps,
-) {
+export function useImperativeHandle(ref, create, deps) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useImperativeHandle(ref, create, deps);
 }
 
-export function useDebugValue(
-  value,
-  formatterFn,
-) {
+export function useDebugValue(value, formatterFn) {
   if (__DEV__) {
     const dispatcher = resolveDispatcher();
     return dispatcher.useDebugValue(value, formatterFn);
@@ -192,26 +169,14 @@ export function useId() {
   return dispatcher.useId();
 }
 
-export function useMutableSource(
-  source,
-  getSnapshot,
-  subscribe,
-) {
+export function useMutableSource(source, getSnapshot, subscribe) {
   const dispatcher = resolveDispatcher();
   return dispatcher.useMutableSource(source, getSnapshot, subscribe);
 }
 
-export function useSyncExternalStore(
-  subscribe,
-  getSnapshot,
-  getServerSnapshot,
-) {
+export function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
   const dispatcher = resolveDispatcher();
-  return dispatcher.useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  return dispatcher.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 export function useCacheRefresh() {

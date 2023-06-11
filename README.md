@@ -1,13 +1,16 @@
 # react-sc-study
+
 source code debug
 
 ## 源码调试
+
 ### build link
+
 - 文章: https://juejin.cn/post/7168821587251036167
 - build: yarn build react/index,react/jsx,react-dom/index,scheduler --type=NODE
 - 其他内容:
-  - 打包需要jdk: https://www.azul.com/downloads/?package=jdk macos ARM .dmg
-  - 另外一个报错需要修改host
+  - 打包需要 jdk: https://www.azul.com/downloads/?package=jdk macos ARM .dmg
+  - 另外一个报错需要修改 host
 
 ```
   # GitHub Start
@@ -32,13 +35,20 @@ source code debug
   151.101.56.133  user-images.githubusercontent.com
   # GitHub End
 ```
+
 ## 使用本地文件
+
 - 文章: https://juejin.cn/post/7184408692262404152#heading-0
-- b站视频: https://www.bilibili.com/video/BV1He4y1V72s/?spm_id_from=333.999.0.0&vd_source=b4c15a99a202087ce063b08f8614425c
+- b 站视频: https://www.bilibili.com/video/BV1He4y1V72s/?spm_id_from=333.999.0.0&vd_source=b4c15a99a202087ce063b08f8614425c
 
 ## 问题
-- flow类型问题
+
+- flow 类型问题
   - npm install --global flow-remove-types
   - flow-remove-types --help
   - flow-remove-types --out-dir src/react src/react
   - 存在一些需要手动处理
+
+## node version
+
+- 14.17.0

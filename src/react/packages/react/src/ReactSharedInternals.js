@@ -11,8 +11,8 @@ import ReactCurrentBatchConfig from './ReactCurrentBatchConfig';
 import ReactCurrentActQueue from './ReactCurrentActQueue';
 import ReactCurrentOwner from './ReactCurrentOwner';
 import ReactDebugCurrentFrame from './ReactDebugCurrentFrame';
-import {enableServerContext} from 'shared/ReactFeatureFlags';
-import {ContextRegistry} from './ReactServerContextRegistry';
+import { enableServerContext } from 'shared/ReactFeatureFlags';
+import { ContextRegistry } from './ReactServerContextRegistry';
 
 const ReactSharedInternals = {
   ReactCurrentDispatcher,

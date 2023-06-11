@@ -10,13 +10,13 @@
 /* eslint-disable no-var */
 /* eslint-disable react-internal/prod-error-codes */
 
-                                                          
+
 
 import {
   enableSchedulerDebugging,
   enableProfiling,
 } from '../SchedulerFeatureFlags';
-import {push, pop, peek} from '../SchedulerMinHeap';
+import { push, pop, peek } from '../SchedulerMinHeap';
 
 // TODO: Use symbols?
 import {
@@ -39,17 +39,17 @@ import {
   startLoggingProfilingEvents,
 } from '../SchedulerProfiling';
 
-                                     
 
-             
-             
-                            
-                               
-                    
-                         
-                    
-                     
-  
+
+
+
+
+
+
+
+
+
+
 
 // Max 31 bit integer. The max integer size in V8 for 32-bit systems.
 // Math.pow(2, 30) - 1
@@ -67,7 +67,7 @@ var IDLE_PRIORITY_TIMEOUT = maxSigned31BitInt;
 
 // Tasks are stored on a min heap
 var taskQueue = [];
-var timerQueue              = [];
+var timerQueue = [];
 
 // Incrementing id counter. Used to maintain insertion order.
 var taskIdCounter = 1;
@@ -84,29 +84,29 @@ var isPerformingWork = false;
 var isHostCallbackScheduled = false;
 var isHostTimeoutScheduled = false;
 
-let currentMockTime         = 0;
-let scheduledCallback 
-        
-      
-                                
-                                                
-                  = null;
-let scheduledTimeout                          = null;
-let timeoutTime         = -1;
-let yieldedValues                      = null;
-let expectedNumberOfYields         = -1;
-let didStop          = false;
-let isFlushing          = false;
-let needsPaint          = false;
-let shouldYieldForPaint          = false;
+let currentMockTime = 0;
+let scheduledCallback
+
+
+
+
+  = null;
+let scheduledTimeout = null;
+let timeoutTime = -1;
+let yieldedValues = null;
+let expectedNumberOfYields = -1;
+let didStop = false;
+let isFlushing = false;
+let needsPaint = false;
+let shouldYieldForPaint = false;
 
 var disableYieldValue = false;
 
-function setDisableYieldValue(newValue         ) {
+function setDisableYieldValue(newValue) {
   disableYieldValue = newValue;
 }
 
-function advanceTimers(currentTime        ) {
+function advanceTimers(currentTime) {
   // Check for tasks that are no longer delayed and add them to the queue.
   let timer = peek(timerQueue);
   while (timer !== null) {
@@ -130,7 +130,7 @@ function advanceTimers(currentTime        ) {
   }
 }
 
-function handleTimeout(currentTime        ) {
+function handleTimeout(currentTime) {
   isHostTimeoutScheduled = false;
   advanceTimers(currentTime);
 
@@ -147,7 +147,7 @@ function handleTimeout(currentTime        ) {
   }
 }
 
-function flushWork(hasTimeRemaining         , initialTime        ) {
+function flushWork(hasTimeRemaining, initialTime) {
   if (enableProfiling) {
     markSchedulerUnsuspended(initialTime);
   }
@@ -191,7 +191,7 @@ function flushWork(hasTimeRemaining         , initialTime        ) {
   }
 }
 
-function workLoop(hasTimeRemaining         , initialTime        )          {
+function workLoop(hasTimeRemaining, initialTime) {
   let currentTime = initialTime;
   advanceTimers(currentTime);
   currentTask = peek(taskQueue);
@@ -269,10 +269,10 @@ function workLoop(hasTimeRemaining         , initialTime        )          {
   }
 }
 
-function unstable_runWithPriority   (
-  priorityLevel               ,
-  eventHandler         ,
-)    {
+function unstable_runWithPriority(
+  priorityLevel,
+  eventHandler,
+) {
   switch (priorityLevel) {
     case ImmediatePriority:
     case UserBlockingPriority:
@@ -294,7 +294,7 @@ function unstable_runWithPriority   (
   }
 }
 
-function unstable_next   (eventHandler         )    {
+function unstable_next(eventHandler) {
   var priorityLevel;
   switch (currentPriorityLevel) {
     case ImmediatePriority:
@@ -319,10 +319,10 @@ function unstable_next   (eventHandler         )    {
   }
 }
 
-function unstable_wrapCallback                               (callback   )    {
+function unstable_wrapCallback(callback) {
   var parentPriorityLevel = currentPriorityLevel;
   // $FlowFixMe[incompatible-return]
-  return function() {
+  return function () {
     // This is a fork of runWithPriority, inlined for performance.
     var previousPriorityLevel = currentPriorityLevel;
     currentPriorityLevel = parentPriorityLevel;
@@ -336,10 +336,10 @@ function unstable_wrapCallback                               (callback   )    {
 }
 
 function unstable_scheduleCallback(
-  priorityLevel               ,
-  callback          ,
-  options                  ,
-)       {
+  priorityLevel,
+  callback,
+  options,
+) {
   var currentTime = getCurrentTime();
 
   var startTime;
@@ -376,7 +376,7 @@ function unstable_scheduleCallback(
 
   var expirationTime = startTime + timeout;
 
-  var newTask       = {
+  var newTask = {
     id: taskIdCounter++,
     callback,
     priorityLevel,
@@ -433,11 +433,11 @@ function unstable_continueExecution() {
   }
 }
 
-function unstable_getFirstCallbackNode()              {
+function unstable_getFirstCallbackNode() {
   return peek(taskQueue);
 }
 
-function unstable_cancelCallback(task      ) {
+function unstable_cancelCallback(task) {
   if (enableProfiling) {
     if (task.isQueued) {
       const currentTime = getCurrentTime();
@@ -452,25 +452,25 @@ function unstable_cancelCallback(task      ) {
   task.callback = null;
 }
 
-function unstable_getCurrentPriorityLevel()                {
+function unstable_getCurrentPriorityLevel() {
   return currentPriorityLevel;
 }
 
-function requestHostCallback(callback                              ) {
+function requestHostCallback(callback) {
   scheduledCallback = callback;
 }
 
-function requestHostTimeout(callback                , ms        ) {
+function requestHostTimeout(callback, ms) {
   scheduledTimeout = callback;
   timeoutTime = currentMockTime + ms;
 }
 
-function cancelHostTimeout()       {
+function cancelHostTimeout() {
   scheduledTimeout = null;
   timeoutTime = -1;
 }
 
-function shouldYieldToHost()          {
+function shouldYieldToHost() {
   if (
     (expectedNumberOfYields === 0 && yieldedValues === null) ||
     (expectedNumberOfYields !== -1 &&
@@ -485,7 +485,7 @@ function shouldYieldToHost()          {
   return false;
 }
 
-function getCurrentTime()         {
+function getCurrentTime() {
   return currentMockTime;
 }
 
@@ -509,7 +509,7 @@ function reset() {
 }
 
 // Should only be used via an assertion helper that inspects the yielded values.
-function unstable_flushNumberOfYields(count        )       {
+function unstable_flushNumberOfYields(count) {
   if (isFlushing) {
     throw new Error('Already flushing work.');
   }
@@ -533,7 +533,7 @@ function unstable_flushNumberOfYields(count        )       {
   }
 }
 
-function unstable_flushUntilNextPaint()        {
+function unstable_flushUntilNextPaint() {
   if (isFlushing) {
     throw new Error('Already flushing work.');
   }
@@ -559,7 +559,7 @@ function unstable_flushUntilNextPaint()        {
   return false;
 }
 
-function unstable_hasPendingWork()          {
+function unstable_hasPendingWork() {
   return scheduledCallback !== null;
 }
 
@@ -580,7 +580,7 @@ function unstable_flushExpired() {
   }
 }
 
-function unstable_flushAllWithoutAsserting()          {
+function unstable_flushAllWithoutAsserting() {
   // Returns false if no work was flushed.
   if (isFlushing) {
     throw new Error('Already flushing work.');
@@ -605,7 +605,7 @@ function unstable_flushAllWithoutAsserting()          {
   }
 }
 
-function unstable_clearYields()               {
+function unstable_clearYields() {
   if (yieldedValues === null) {
     return [];
   }
@@ -614,24 +614,24 @@ function unstable_clearYields()               {
   return values;
 }
 
-function unstable_flushAll()       {
+function unstable_flushAll() {
   if (yieldedValues !== null) {
     throw new Error(
       'Log is not empty. Assert on the log of yielded values before ' +
-        'flushing additional work.',
+      'flushing additional work.',
     );
   }
   unstable_flushAllWithoutAsserting();
   if (yieldedValues !== null) {
     throw new Error(
       'While flushing work, something yielded a value. Use an ' +
-        'assertion helper to assert on the log of yielded values, e.g. ' +
-        'expect(Scheduler).toFlushAndYield([...])',
+      'assertion helper to assert on the log of yielded values, e.g. ' +
+      'expect(Scheduler).toFlushAndYield([...])',
     );
   }
 }
 
-function unstable_yieldValue(value       )       {
+function unstable_yieldValue(value) {
   // eslint-disable-next-line react-internal/no-production-logging
   if (console.log.name === 'disabledLog' || disableYieldValue) {
     // If console.log has been patched, we assume we're in render
@@ -645,7 +645,7 @@ function unstable_yieldValue(value       )       {
   }
 }
 
-function unstable_advanceTime(ms        ) {
+function unstable_advanceTime(ms) {
   // eslint-disable-next-line react-internal/no-production-logging
   if (console.log.name === 'disabledLog' || disableYieldValue) {
     // If console.log has been patched, we assume we're in render
@@ -696,12 +696,12 @@ export {
   setDisableYieldValue as unstable_setDisableYieldValue,
 };
 
-export const unstable_Profiling   
-                                      
-                                                   
-         = enableProfiling
-  ? {
+export const unstable_Profiling
+
+
+  = enableProfiling
+    ? {
       startLoggingProfilingEvents,
       stopLoggingProfilingEvents,
     }
-  : null;
+    : null;
