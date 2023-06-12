@@ -142,7 +142,9 @@ function FiberNode(
   this.key = key;
   this.elementType = null;
   this.type = null;
-  this.stateNode = null;
+  this.stateNode = null; // 对应的dom节点
+
+  // HostRootFiber的stateNode指向构造好的FiberRootNode { containerInfo: 真实dom root div };
 
   // Fiber
   this.return = null;
@@ -155,8 +157,14 @@ function FiberNode(
 
   this.pendingProps = pendingProps;
   this.memoizedProps = null;
+  
+  // 更新队列 比如 类的 setState就有更新队列
   this.updateQueue = null;
-  this.memoizedState = null;
+
+  // 每个fiber都有自己的状态 每一种类型的fiber 状态存的东西也是不一样的
+  // 类组件可能存的就是实例的状态
+  // hostRoot存的就是要渲染的元素
+  this.memoizedState = null; // 记忆的-状态
   this.dependencies = null;
 
   this.mode = mode;
@@ -225,9 +233,9 @@ function FiberNode(
 // 5) It should be easy to port this to a C struct and keep a C implementation
 //    compatible.
 const createFiber = function (
-  tag,
-  pendingProps,
-  key,
+  tag, // fiber 类型 react-reconciler/src/ReactWorkTags.js
+  pendingProps, // 等待处理或生效的属性
+  key, // 虚拟dom的key属性 dom diff用到
   mode,
 ) {
   // $FlowFixMe: the shapes are exact here but Flow doesn't like constructors
